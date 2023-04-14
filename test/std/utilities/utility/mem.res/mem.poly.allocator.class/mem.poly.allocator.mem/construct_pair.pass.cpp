@@ -40,6 +40,7 @@ int main(int, char**) {
     alignas(P) char buffer[sizeof(P)];
     P* ptr = reinterpret_cast<P*>(buffer);
     A a;
+    constructed = 0;
     a.construct(ptr);
     assert(constructed == 2);
     assert(ptr->first.x == 42);
@@ -55,6 +56,7 @@ int main(int, char**) {
     alignas(P) char buffer[sizeof(P)];
     P* ptr = reinterpret_cast<P*>(buffer);
     A a;
+    constructed = 0;
     a.construct(ptr);
     assert(constructed == 2);
     assert(ptr->first.x == 42);
