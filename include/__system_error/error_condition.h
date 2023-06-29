@@ -46,7 +46,7 @@ namespace __adl_only {
 void make_error_condition() = delete;
 } // namespace __adl_only
 
-class _LIBCPP_TYPE_VIS error_condition {
+class _LIBCPP_EXPORTED_FROM_ABI error_condition {
   int __val_;
   const error_category* __cat_;
 
@@ -108,7 +108,7 @@ inline _LIBCPP_HIDE_FROM_ABI bool operator<(const error_condition& __x, const er
   return __x.category() < __y.category() || (__x.category() == __y.category() && __x.value() < __y.value());
 }
 
-#else  // _LIBCPP_STD_VER <= 17
+#else // _LIBCPP_STD_VER <= 17
 
 inline _LIBCPP_HIDE_FROM_ABI strong_ordering
 operator<=>(const error_condition& __x, const error_condition& __y) noexcept {
