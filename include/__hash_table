@@ -30,10 +30,13 @@
 #include <__type_traits/is_const.h>
 #include <__type_traits/is_copy_constructible.h>
 #include <__type_traits/is_nothrow_constructible.h>
+#include <__type_traits/is_nothrow_copy_constructible.h>
 #include <__type_traits/is_nothrow_default_constructible.h>
+#include <__type_traits/is_nothrow_move_assignable.h>
 #include <__type_traits/is_nothrow_move_constructible.h>
 #include <__type_traits/is_pointer.h>
 #include <__type_traits/is_reference.h>
+#include <__type_traits/is_swappable.h>
 #include <__type_traits/remove_const.h>
 #include <__type_traits/remove_cvref.h>
 #include <__utility/forward.h>
@@ -69,8 +72,7 @@ struct __is_hash_value_type : false_type {};
 template <class _One>
 struct __is_hash_value_type<_One> : __is_hash_value_type_imp<__remove_cvref_t<_One> > {};
 
-_LIBCPP_FUNC_VIS
-size_t __next_prime(size_t __n);
+_LIBCPP_EXPORTED_FROM_ABI size_t __next_prime(size_t __n);
 
 template <class _NodePtr>
 struct __hash_node_base
@@ -1192,7 +1194,7 @@ public:
         _LIBCPP_INLINE_VISIBILITY
         size_type bucket(const _Key& __k) const
         {
-            _LIBCPP_ASSERT(bucket_count() > 0,
+            _LIBCPP_ASSERT_UNCATEGORIZED(bucket_count() > 0,
                 "unordered container::bucket(key) called when bucket_count() == 0");
             return std::__constrain_hash(hash_function()(__k), bucket_count());
         }
@@ -1257,7 +1259,7 @@ public:
     }
     _LIBCPP_INLINE_VISIBILITY void max_load_factor(float __mlf) _NOEXCEPT
     {
-        _LIBCPP_ASSERT(__mlf > 0,
+        _LIBCPP_ASSERT_UNCATEGORIZED(__mlf > 0,
             "unordered container::max_load_factor(lf) called with lf <= 0");
         max_load_factor() = _VSTD::max(__mlf, load_factor());
     }
@@ -1266,7 +1268,7 @@ public:
     local_iterator
     begin(size_type __n)
     {
-        _LIBCPP_ASSERT(__n < bucket_count(),
+        _LIBCPP_ASSERT_UNCATEGORIZED(__n < bucket_count(),
             "unordered container::begin(n) called with n >= bucket_count()");
         return local_iterator(__bucket_list_[__n], __n, bucket_count(), this);
     }
@@ -1275,7 +1277,7 @@ public:
     local_iterator
     end(size_type __n)
     {
-        _LIBCPP_ASSERT(__n < bucket_count(),
+        _LIBCPP_ASSERT_UNCATEGORIZED(__n < bucket_count(),
             "unordered container::end(n) called with n >= bucket_count()");
         return local_iterator(nullptr, __n, bucket_count(), this);
     }
@@ -1284,7 +1286,7 @@ public:
     const_local_iterator
     cbegin(size_type __n) const
     {
-        _LIBCPP_ASSERT(__n < bucket_count(),
+        _LIBCPP_ASSERT_UNCATEGORIZED(__n < bucket_count(),
             "unordered container::cbegin(n) called with n >= bucket_count()");
         return const_local_iterator(__bucket_list_[__n], __n, bucket_count(), this);
     }
@@ -1293,7 +1295,7 @@ public:
     const_local_iterator
     cend(size_type __n) const
     {
-        _LIBCPP_ASSERT(__n < bucket_count(),
+        _LIBCPP_ASSERT_UNCATEGORIZED(__n < bucket_count(),
             "unordered container::cend(n) called with n >= bucket_count()");
         return const_local_iterator(nullptr, __n, bucket_count(), this);
     }
@@ -2413,8 +2415,8 @@ __hash_table<_Tp, _Hash, _Equal, _Alloc>::erase(const_iterator __p)
     _LIBCPP_DEBUG_ASSERT(__get_const_db()->__find_c_from_i(_VSTD::addressof(__p)) == this,
                          "unordered container erase(iterator) called with an iterator not"
                          " referring to this container");
-    _LIBCPP_ASSERT(__p != end(),
-                   "unordered container erase(iterator) called with a non-dereferenceable iterator");
+    _LIBCPP_ASSERT_UNCATEGORIZED(__p != end(),
+                                 "unordered container erase(iterator) called with a non-dereferenceable iterator");
     iterator __r(__np, this);
     ++__r;
     remove(__p);
@@ -2634,10 +2636,10 @@ __hash_table<_Tp, _Hash, _Equal, _Alloc>::swap(__hash_table& __u)
   _NOEXCEPT_(__is_nothrow_swappable<hasher>::value && __is_nothrow_swappable<key_equal>::value)
 #endif
 {
-    _LIBCPP_ASSERT(__node_traits::propagate_on_container_swap::value ||
-                   this->__node_alloc() == __u.__node_alloc(),
-                   "list::swap: Either propagate_on_container_swap must be true"
-                   " or the allocators must compare equal");
+    _LIBCPP_ASSERT_UNCATEGORIZED(__node_traits::propagate_on_container_swap::value ||
+                                 this->__node_alloc() == __u.__node_alloc(),
+                                 "list::swap: Either propagate_on_container_swap must be true"
+                                 " or the allocators must compare equal");
     {
     __node_pointer_pointer __npp = __bucket_list_.release();
     __bucket_list_.reset(__u.__bucket_list_.release());
@@ -2663,7 +2665,7 @@ template <class _Tp, class _Hash, class _Equal, class _Alloc>
 typename __hash_table<_Tp, _Hash, _Equal, _Alloc>::size_type
 __hash_table<_Tp, _Hash, _Equal, _Alloc>::bucket_size(size_type __n) const
 {
-    _LIBCPP_ASSERT(__n < bucket_count(),
+    _LIBCPP_ASSERT_UNCATEGORIZED(__n < bucket_count(),
         "unordered container::bucket_size(n) called with n >= bucket_count()");
     __next_pointer __np = __bucket_list_[__n];
     size_type __bc = bucket_count();

@@ -40,7 +40,7 @@ namespace __adl_only {
 void make_error_code() = delete;
 } // namespace __adl_only
 
-class _LIBCPP_TYPE_VIS error_code {
+class _LIBCPP_EXPORTED_FROM_ABI error_code {
   int __val_;
   const error_category* __cat_;
 
@@ -123,7 +123,7 @@ inline _LIBCPP_HIDE_FROM_ABI bool operator<(const error_code& __x, const error_c
   return __x.category() < __y.category() || (__x.category() == __y.category() && __x.value() < __y.value());
 }
 
-#else  // _LIBCPP_STD_VER <= 17
+#else // _LIBCPP_STD_VER <= 17
 
 inline _LIBCPP_HIDE_FROM_ABI strong_ordering operator<=>(const error_code& __x, const error_code& __y) noexcept {
   if (auto __c = __x.category() <=> __y.category(); __c != 0)

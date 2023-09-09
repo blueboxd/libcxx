@@ -10,11 +10,13 @@
 #ifndef _PSTL_PARALLEL_BACKEND_SERIAL_H
 #define _PSTL_PARALLEL_BACKEND_SERIAL_H
 
+#include <__config>
 #include <__memory/allocator.h>
 #include <__pstl/internal/execution_impl.h>
 #include <__utility/forward.h>
+#include <cstddef>
 
-#include "pstl_config.h"
+#if !defined(_LIBCPP_HAS_NO_INCOMPLETE_PSTL) && _LIBCPP_STD_VER >= 17
 
 namespace __pstl
 {
@@ -44,18 +46,6 @@ class __buffer
     _LIBCPP_HIDE_FROM_ABI ~__buffer() { __allocator_.deallocate(__ptr_, __buf_size_); }
 };
 
-_LIBCPP_HIDE_FROM_ABI inline void
-__cancel_execution()
-{
-}
-
-template <class _ExecutionPolicy, class _Index, class _Fp>
-_LIBCPP_HIDE_FROM_ABI void
-__parallel_for(__pstl::__internal::__serial_backend_tag, _ExecutionPolicy&&, _Index __first, _Index __last, _Fp __f)
-{
-    __f(__first, __last);
-}
-
 template <class _ExecutionPolicy, class _Value, class _Index, typename _RealBody, typename _Reduction>
 _LIBCPP_HIDE_FROM_ABI _Value
 __parallel_reduce(__pstl::__internal::__serial_backend_tag, _ExecutionPolicy&&, _Index __first, _Index __last,
@@ -69,14 +59,6 @@ __parallel_reduce(__pstl::__internal::__serial_backend_tag, _ExecutionPolicy&&, 
     {
         return __real_body(__first, __last, __identity);
     }
-}
-
-template <class _ExecutionPolicy, class _Index, class _UnaryOp, class _Tp, class _BinaryOp, class _Reduce>
-_LIBCPP_HIDE_FROM_ABI _Tp
-__parallel_transform_reduce(__pstl::__internal::__serial_backend_tag, _ExecutionPolicy&&, _Index __first, _Index __last,
-                            _UnaryOp, _Tp __init, _BinaryOp, _Reduce __reduce)
-{
-    return __reduce(__first, __last, __init);
 }
 
 template <class _ExecutionPolicy, typename _Index, typename _Tp, typename _Rp, typename _Cp, typename _Sp, typename _Ap>
@@ -108,16 +90,6 @@ __parallel_stable_sort(__pstl::__internal::__serial_backend_tag, _ExecutionPolic
     __leaf_sort(__first, __last, __comp);
 }
 
-template <class _ExecutionPolicy, typename _RandomAccessIterator1, typename _RandomAccessIterator2,
-          typename _RandomAccessIterator3, typename _Compare, typename _LeafMerge>
-_LIBCPP_HIDE_FROM_ABI void
-__parallel_merge(__pstl::__internal::__serial_backend_tag, _ExecutionPolicy&&, _RandomAccessIterator1 __first1,
-                 _RandomAccessIterator1 __last1, _RandomAccessIterator2 __first2, _RandomAccessIterator2 __last2,
-                 _RandomAccessIterator3 __outit, _Compare __comp, _LeafMerge __leaf_merge)
-{
-    __leaf_merge(__first1, __last1, __first2, __last2, __outit, __comp);
-}
-
 template <class _ExecutionPolicy, typename _F1, typename _F2>
 _LIBCPP_HIDE_FROM_ABI void
 __parallel_invoke(__pstl::__internal::__serial_backend_tag, _ExecutionPolicy&&, _F1&& __f1, _F2&& __f2)
@@ -128,5 +100,7 @@ __parallel_invoke(__pstl::__internal::__serial_backend_tag, _ExecutionPolicy&&, 
 
 } // namespace __serial_backend
 } // namespace __pstl
+
+#endif // !defined(_LIBCPP_HAS_NO_INCOMPLETE_PSTL) && _LIBCPP_STD_VER >= 17
 
 #endif /* _PSTL_PARALLEL_BACKEND_SERIAL_H */
