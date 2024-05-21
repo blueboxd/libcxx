@@ -1,3 +1,4 @@
+// -*- C++ -*-
 //===----------------------------------------------------------------------===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
@@ -6,13 +7,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef _LIBCPP___TUPLE_PAIR_LIKE_H
-#define _LIBCPP___TUPLE_PAIR_LIKE_H
+#ifndef _LIBCPP__UTILITY_PRIVATE_CONSTRUCTOR_TAG_H
+#define _LIBCPP__UTILITY_PRIVATE_CONSTRUCTOR_TAG_H
 
 #include <__config>
-#include <__tuple/tuple_like.h>
-#include <__tuple/tuple_size.h>
-#include <__type_traits/remove_cvref.h>
 
 #if !defined(_LIBCPP_HAS_NO_PRAGMA_SYSTEM_HEADER)
 #  pragma GCC system_header
@@ -20,13 +18,11 @@
 
 _LIBCPP_BEGIN_NAMESPACE_STD
 
-#if _LIBCPP_STD_VER >= 20
-
-template <class _Tp>
-concept __pair_like = __tuple_like<_Tp> && tuple_size<remove_cvref_t<_Tp>>::value == 2;
-
-#endif // _LIBCPP_STD_VER >= 20
+// This tag allows defining non-standard exposition-only constructors while
+// preventing users from being able to use them, since this reserved-name tag
+// needs to be used.
+struct __private_constructor_tag {};
 
 _LIBCPP_END_NAMESPACE_STD
 
-#endif // _LIBCPP___TUPLE_PAIR_LIKE_H
+#endif // _LIBCPP__UTILITY_PRIVATE_CONSTRUCTOR_TAG_H
